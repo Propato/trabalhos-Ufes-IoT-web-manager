@@ -1,11 +1,17 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 
 import App from "./App.vue";
 import router from "./router";
+
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 // Font Awesome
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -49,7 +55,10 @@ const app = createApp(App);
 
 app.component("font-awesome-icon", FontAwesomeIcon);
 
-app.use(createPinia());
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
+app.use(pinia);
 app.use(router);
 
 app.mount("#app");

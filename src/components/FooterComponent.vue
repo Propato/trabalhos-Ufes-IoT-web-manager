@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-warning-subtle text-warning-emphasis py-3">
+    <footer class="bg-warning-subtle text-warning-emphasis py-3 mt-2">
         <ul class="nav justify-content-center align-items-center border-bottom pb-2 m-2">
             <li class="nav-item">
                 <a href="#" class="nav-link text-body-secondary">
