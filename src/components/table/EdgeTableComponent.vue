@@ -17,76 +17,91 @@
 
 <script setup lang="ts">
 import CustomActionRenderer from "@/components/table/actions/CustomActionRenderer.vue";
-import type { IAlertMessage, INode } from "@/utils/interfaces";
+import type { IAlertMessage, IEdge } from "@/utils/interfaces";
 import { MessageComponent } from "@/components";
-import { useNodeStore } from "@/stores/nodes";
+import { useEdgeStore, useNodeStore } from "@/stores";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
 
-const store = useNodeStore();
+const store = useEdgeStore();
+const storeNodes = useNodeStore();
 const viewMessages = ref<IAlertMessage[]>([]);
 
-const localData = ref<INode[]>([{} as INode, ...store.nodes]);
+const localData = ref<IEdge[]>([{} as IEdge, ...store.edges]);
 
-const deleteRow = (data: INode) => {
+const deleteRow = (data: IEdge) => {
     if (!data.id) return;
     try {
-        store.deleteNode(data);
-        localData.value = [{} as INode, ...store.nodes];
-        viewMessages.value = [{ message: "Node deleted successfully", type: "success" }];
+        store.deleteEdge(data);
+        localData.value = [{} as IEdge, ...store.edges];
+        viewMessages.value = [{ message: "Edge deleted successfully", type: "success" }];
     } catch (error) {
-        console.error("Error deleting node:", error);
-        viewMessages.value = [{ message: "Error deleting node", type: "danger" }];
+        console.error("Error deleting edge:", error);
+        viewMessages.value = [{ message: "Error deleting edge", type: "danger" }];
     }
 };
 
-const onCellValueChanged = (params: { data: INode }) => {
+const onCellValueChanged = (params: { data: IEdge }) => {
     if (!params.data.id) return;
     try {
-        store.updateNode(params.data);
-        viewMessages.value = [{ message: "Node updated successfully", type: "success" }];
+        store.updateEdge(params.data);
+        viewMessages.value = [{ message: "Edge updated successfully", type: "success" }];
     } catch (error) {
-        console.error("Error updating node:", error);
-        viewMessages.value = [{ message: "Error updating node", type: "danger" }];
+        console.error("Error updating edge:", error);
+        viewMessages.value = [{ message: "Error updating edge", type: "danger" }];
     }
 };
 
-const addNode = (data: INode) => {
-    if (!data.label || !data.type) {
-        viewMessages.value = [{ message: "Label and Type are required", type: "warning" }];
+const addEdge = (data: IEdge) => {
+    if (!data.length || !data.source || !data.target) {
+        viewMessages.value = [
+            { message: "Source, Target and Length are required", type: "warning" },
+        ];
         return;
     }
     if (!data.id) data.id = store.getNextId;
 
     try {
-        store.addNode(data);
-        localData.value = [{} as INode, ...store.nodes];
+        store.addEdge(data);
+        localData.value = [{} as IEdge, ...store.edges];
 
-        viewMessages.value = [{ message: "Node added successfully", type: "success" }];
+        viewMessages.value = [{ message: "Edge added successfully", type: "success" }];
     } catch (error) {
-        console.error("Error adding node:", error);
-        viewMessages.value = [{ message: "Error adding node", type: "danger" }];
+        console.error("Error adding edge:", error);
+        viewMessages.value = [{ message: "Error adding edge", type: "danger" }];
     }
 };
 
 const colDefs = [
     { field: "id", headerName: "Id", sortable: true, filter: true, flex: 1 },
     {
-        field: "label",
-        headerName: "Label",
+        field: "source",
+        headerName: "Source",
         editable: true,
         sortable: true,
         filter: true,
         flex: 2,
-    },
-    {
-        field: "type",
-        headerName: "Type",
-        editable: true,
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
-            values: ["gate", "path", "slot", "door"],
+            values: [...storeNodes.nodes.map((node) => node.label)],
         },
+    },
+    {
+        field: "target",
+        headerName: "Target",
+        editable: true,
+        sortable: true,
+        filter: true,
+        flex: 2,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: [...storeNodes.nodes.map((node) => node.label)],
+        },
+    },
+    {
+        field: "length",
+        headerName: "Length",
+        editable: true,
         sortable: true,
         filter: true,
         flex: 2,
@@ -95,9 +110,9 @@ const colDefs = [
         field: "actions",
         headerName: "Actions",
         cellRenderer: "CustomActionRenderer",
-        cellRendererParams: (params: { data: INode }) => ({
+        cellRendererParams: (params: { data: IEdge }) => ({
             data: params.data,
-            onSaveRow: addNode,
+            onSaveRow: addEdge,
             onDeleteRow: deleteRow,
         }),
         sortable: false,
