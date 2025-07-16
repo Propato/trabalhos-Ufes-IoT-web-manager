@@ -1,4 +1,4 @@
 export interface IAlertMessage {
-    text: string;
+    message: string;
     type: "success" | "danger" | "warning" | "info";
 }

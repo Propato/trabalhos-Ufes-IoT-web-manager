@@ -6,7 +6,7 @@
         :class="'alert-' + message.type"
         role="alert"
     >
-        <span>{{ message.text || "System Error" }}</span>
+        <span>{{ message.message || "System Error" }}</span>
         <button
             type="button"
             class="btn-close"

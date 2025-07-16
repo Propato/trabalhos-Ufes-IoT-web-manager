@@ -4,9 +4,9 @@
     <p>Welcome to the home page!</p>
     <p>Please, register your graphs.</p>
 
-    <GraphTableComponent />
+    <NodeTableComponent />
 </template>
 
 <script setup lang="ts">
-import GraphTableComponent from "@/components/table/GraphTableComponent.vue";
+import NodeTableComponent from "@/components/table/NodeTableComponent.vue";
 </script>

@@ -4,19 +4,30 @@ import { defineStore } from "pinia";
 
 export const useNodeStore = defineStore("nodes", {
     state: () => ({
-        nodes: <INode[] | null>[
-            { label: "Tesla", type: "gate" },
-            { label: "Ford", type: "path" },
-            { label: "Toyota", type: "slot" },
-        ],
+        nodes: JSON.parse(localStorage.getItem("nodes") || "[]") as INode[],
     }),
-    actions: {
-        deleteNodeByIndex(index: number) {
-            if (index !== -1) this.nodes?.splice(index, 1);
-        },
 
-        deleteNodeByLabel(label: string) {
-            this.nodes = this.nodes?.filter((node) => node.label !== label) as INode[] | null;
+    getters: {
+        getNextId(state) {
+            return state.nodes.length > 0 ? Math.max(...state.nodes.map((node) => node.id)) + 1 : 1;
+        },
+    },
+
+    actions: {
+        deleteNode(node: INode) {
+            this.nodes = this.nodes?.filter((n) => n.id !== node.id) as INode[];
+        },
+        updateNode(node: INode) {
+            const index = this.nodes.findIndex((n) => n.id === node.id);
+            if (index !== -1) {
+                this.nodes[index] = { ...node };
+            }
+        },
+        addNode(node: INode) {
+            this.nodes.push({ ...node });
+        },
+        persistNodes() {
+            localStorage.setItem("nodes", JSON.stringify(this.nodes));
         },
     },
     persist: true,
