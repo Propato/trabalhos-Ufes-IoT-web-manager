@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import CustomActionRenderer from "@/components/table/actions/CustomActionRenderer.vue";
+import { CustomActionRenderer } from "@/components/table/actions";
 import type { IAlertMessage, INode } from "@/utils/interfaces";
-import { MessageComponent } from "@/components";
+import { MessageComponent } from "@/components/functional";
 import { useNodeStore } from "@/stores/nodes";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
@@ -33,7 +33,7 @@ const deleteRow = (data: INode) => {
     try {
         store.deleteNode(data);
         localData.value = [{} as INode, ...store.nodes];
-        viewMessages.value = [{ message: "Node deleted successfully", type: "success" }];
+        viewMessages.value = [{ message: "Node deleted successfully", type: "warning" }];
     } catch (error) {
         console.error("Error deleting node:", error);
         viewMessages.value = [{ message: "Error deleting node", type: "danger" }];
@@ -44,7 +44,7 @@ const onCellValueChanged = (params: { data: INode }) => {
     if (!params.data.id) return;
     try {
         store.updateNode(params.data);
-        viewMessages.value = [{ message: "Node updated successfully", type: "success" }];
+        viewMessages.value = [{ message: "Node updated successfully", type: "warning" }];
     } catch (error) {
         console.error("Error updating node:", error);
         viewMessages.value = [{ message: "Error updating node", type: "danger" }];
@@ -53,7 +53,7 @@ const onCellValueChanged = (params: { data: INode }) => {
 
 const addNode = (data: INode) => {
     if (!data.label || !data.type) {
-        viewMessages.value = [{ message: "Label and Type are required", type: "warning" }];
+        viewMessages.value = [{ message: "Label and Type are required", type: "info" }];
         return;
     }
     if (!data.id) data.id = store.getNextId;
@@ -62,7 +62,7 @@ const addNode = (data: INode) => {
         store.addNode(data);
         localData.value = [{} as INode, ...store.nodes];
 
-        viewMessages.value = [{ message: "Node added successfully", type: "success" }];
+        viewMessages.value = [{ message: "Node added successfully", type: "warning" }];
     } catch (error) {
         console.error("Error adding node:", error);
         viewMessages.value = [{ message: "Error adding node", type: "danger" }];
@@ -85,11 +85,21 @@ const colDefs = [
         editable: true,
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
-            values: ["gate", "path", "slot", "door"],
+            values: ["gate", "path", "slot", "entrance"],
         },
         sortable: true,
         filter: true,
         flex: 2,
+    },
+    {
+        field: "active",
+        headerName: "Active",
+        editable: true,
+        sortable: true,
+        filter: true,
+        flex: 1,
+        cellRenderer: "agCheckboxCellRenderer",
+        cellEditor: "agCheckboxCellEditor",
     },
     {
         field: "actions",

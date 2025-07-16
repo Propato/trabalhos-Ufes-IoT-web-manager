@@ -13,7 +13,7 @@ const props = defineProps<{
     };
 }>();
 
-function handleSave() {
+const handleSave = () => {
     props.params.onSaveRow(props.params.data);
-}
+};
 </script>

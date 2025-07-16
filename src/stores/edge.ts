@@ -17,17 +17,25 @@ export const useEdgeStore = defineStore("edges", {
         deleteEdge(edge: IEdge) {
             this.edges = this.edges?.filter((n) => n.id !== edge.id) as IEdge[];
         },
+
         updateEdge(edge: IEdge) {
             const index = this.edges.findIndex((n) => n.id === edge.id);
             if (index !== -1) {
                 this.edges[index] = { ...edge };
             }
         },
+
         addEdge(edge: IEdge) {
             this.edges.push({ ...edge });
         },
+
         persistEdges() {
             localStorage.setItem("edges", JSON.stringify(this.edges));
+        },
+
+        resetEdge(edges: IEdge[]) {
+            this.edges = edges;
+            this.persistEdges();
         },
     },
     persist: true,

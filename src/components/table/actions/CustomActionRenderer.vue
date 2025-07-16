@@ -5,8 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import SaveButtonComponent from "@/components/table/actions/SaveButtonComponent.vue";
-import DeleteButtonComponent from "@/components/table/actions/DeleteButtonComponent.vue";
+import { SaveButtonComponent, DeleteButtonComponent } from "@/components/table/actions";
 
 const props = defineProps<{
     params: {

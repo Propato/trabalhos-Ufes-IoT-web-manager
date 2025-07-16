@@ -1,0 +1,152 @@
+[
+    {
+        "id": 1,
+        "label": "G1",
+        "type": "gate",
+        "active": true
+    },
+    {
+        "id": 2,
+        "label": "G2",
+        "type": "gate",
+        "active": true
+    },
+    {
+        "id": 3,
+        "label": "E4",
+        "type": "entrance",
+        "active": true
+    },
+    {
+        "id": 4,
+        "label": "E4",
+        "type": "entrance",
+        "active": true
+    },
+    {
+        "id": 5,
+        "label": "S1",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 6,
+        "label": "S2",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 7,
+        "label": "S3",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 8,
+        "label": "S4",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 9,
+        "label": "S5",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 10,
+        "label": "S6",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 11,
+        "label": "S7",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 12,
+        "label": "S8",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 13,
+        "label": "S9",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 14,
+        "label": "S10",
+        "type": "slot",
+        "active": true
+    },
+    {
+        "id": 15,
+        "label": "P1",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 16,
+        "label": "P2",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 17,
+        "label": "P3",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 18,
+        "label": "P4",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 19,
+        "label": "P5",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 20,
+        "label": "P6",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 21,
+        "label": "P7",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 22,
+        "label": "P8",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 23,
+        "label": "P9",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 24,
+        "label": "P10",
+        "type": "path",
+        "active": true
+    },
+    {
+        "id": 25,
+        "label": "P11",
+        "type": "path",
+        "active": true
+    }
+]

@@ -10,5 +10,5 @@
 
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { NavHeaderComponent, FooterComponent } from "@/components";
+import { NavHeaderComponent, FooterComponent } from "@/components/layout-parts";
 </script>

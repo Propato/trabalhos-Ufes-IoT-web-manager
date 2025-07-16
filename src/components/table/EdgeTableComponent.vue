@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import CustomActionRenderer from "@/components/table/actions/CustomActionRenderer.vue";
+import { CustomActionRenderer } from "@/components/table/actions";
 import type { IAlertMessage, IEdge } from "@/utils/interfaces";
-import { MessageComponent } from "@/components";
+import { MessageComponent } from "@/components/functional";
 import { useEdgeStore, useNodeStore } from "@/stores";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
@@ -34,7 +34,7 @@ const deleteRow = (data: IEdge) => {
     try {
         store.deleteEdge(data);
         localData.value = [{} as IEdge, ...store.edges];
-        viewMessages.value = [{ message: "Edge deleted successfully", type: "success" }];
+        viewMessages.value = [{ message: "Edge deleted successfully", type: "warning" }];
     } catch (error) {
         console.error("Error deleting edge:", error);
         viewMessages.value = [{ message: "Error deleting edge", type: "danger" }];
@@ -45,7 +45,7 @@ const onCellValueChanged = (params: { data: IEdge }) => {
     if (!params.data.id) return;
     try {
         store.updateEdge(params.data);
-        viewMessages.value = [{ message: "Edge updated successfully", type: "success" }];
+        viewMessages.value = [{ message: "Edge updated successfully", type: "warning" }];
     } catch (error) {
         console.error("Error updating edge:", error);
         viewMessages.value = [{ message: "Error updating edge", type: "danger" }];
@@ -54,9 +54,7 @@ const onCellValueChanged = (params: { data: IEdge }) => {
 
 const addEdge = (data: IEdge) => {
     if (!data.length || !data.source || !data.target) {
-        viewMessages.value = [
-            { message: "Source, Target and Length are required", type: "warning" },
-        ];
+        viewMessages.value = [{ message: "Source, Target and Length are required", type: "info" }];
         return;
     }
     if (!data.id) data.id = store.getNextId;
@@ -65,7 +63,7 @@ const addEdge = (data: IEdge) => {
         store.addEdge(data);
         localData.value = [{} as IEdge, ...store.edges];
 
-        viewMessages.value = [{ message: "Edge added successfully", type: "success" }];
+        viewMessages.value = [{ message: "Edge added successfully", type: "warning" }];
     } catch (error) {
         console.error("Error adding edge:", error);
         viewMessages.value = [{ message: "Error adding edge", type: "danger" }];
@@ -105,6 +103,16 @@ const colDefs = [
         sortable: true,
         filter: true,
         flex: 2,
+    },
+    {
+        field: "active",
+        headerName: "Active",
+        editable: true,
+        sortable: true,
+        filter: true,
+        flex: 1,
+        cellRenderer: "agCheckboxCellRenderer",
+        cellEditor: "agCheckboxCellEditor",
     },
     {
         field: "actions",

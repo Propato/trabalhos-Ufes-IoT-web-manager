@@ -1,0 +1,16 @@
+// src/stores/useGridStore.ts
+import type { IPath } from "@/utils/interfaces";
+import { defineStore } from "pinia";
+
+export const usePathStore = defineStore("paths", {
+    state: () => ({
+        paths: JSON.parse(localStorage.getItem("paths") || "[]") as IPath[],
+    }),
+
+    actions: {
+        persistPaths() {
+            localStorage.setItem("paths", JSON.stringify(this.paths));
+        },
+    },
+    persist: true,
+});
