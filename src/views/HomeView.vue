@@ -104,7 +104,7 @@ import { EdgeTableComponent, NodeTableComponent, PathTableComponent } from "@/co
 import type { IAlertMessage, IEdge, INode } from "@/utils/interfaces";
 import { MessageComponent } from "@/components/functional";
 import { useEdgeStore, useNodeStore } from "@/stores";
-import { jsonFileToObject } from "@/utils/functions";
+import { dijkstra, jsonFileToObject } from "@/utils/functions";
 import { ref } from "vue";
 
 const storeEdge = useEdgeStore();
@@ -138,7 +138,12 @@ const resetGraph = async () => {
 };
 
 const calculatePaths = () => {
-    console.log("click");
+    console.log("Click");
+
+    console.log(dijkstra("G1", storeNodes.nodes, storeEdge.edges));
+    console.log(dijkstra("G2", storeNodes.nodes, storeEdge.edges));
+
+    console.log("Finish");
 };
 </script>
 
