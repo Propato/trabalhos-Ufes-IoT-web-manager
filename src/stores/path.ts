@@ -11,6 +11,11 @@ export const usePathStore = defineStore("paths", {
         persistPaths() {
             localStorage.setItem("paths", JSON.stringify(this.paths));
         },
+
+        setPath(paths: IPath[]) {
+            this.paths = paths;
+            this.persistPaths();
+        },
     },
     persist: true,
 });

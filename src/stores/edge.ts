@@ -33,7 +33,7 @@ export const useEdgeStore = defineStore("edges", {
             localStorage.setItem("edges", JSON.stringify(this.edges));
         },
 
-        resetEdge(edges: IEdge[]) {
+        setEdge(edges: IEdge[]) {
             this.edges = edges;
             this.persistEdges();
         },

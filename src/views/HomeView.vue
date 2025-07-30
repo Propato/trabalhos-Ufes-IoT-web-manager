@@ -103,12 +103,14 @@
 import { EdgeTableComponent, NodeTableComponent, PathTableComponent } from "@/components/table";
 import type { IAlertMessage, IEdge, INode } from "@/utils/interfaces";
 import { MessageComponent } from "@/components/functional";
-import { useEdgeStore, useNodeStore } from "@/stores";
+import { useEdgeStore, useNodeStore, usePathStore } from "@/stores";
 import { dijkstra, jsonFileToObject } from "@/utils/functions";
 import { ref } from "vue";
+import { setPath } from "@/utils/functions/path";
 
 const storeEdge = useEdgeStore();
 const storeNodes = useNodeStore();
+const storePaths = usePathStore();
 
 const viewMessages = ref<IAlertMessage[]>([]);
 
@@ -128,8 +130,8 @@ const resetGraph = async () => {
     }
     const contentEdge = content as IEdge[];
 
-    storeNodes.resetNode(contentNode);
-    storeEdge.resetEdge(contentEdge);
+    storeNodes.setNode(contentNode);
+    storeEdge.setEdge(contentEdge);
 
     viewMessages.value = [{ message: "Graph reset successfully", type: "warning" }];
 
@@ -140,9 +142,19 @@ const resetGraph = async () => {
 const calculatePaths = () => {
     console.log("Click");
 
-    console.log(dijkstra("G1", storeNodes.nodes, storeEdge.edges));
-    console.log(dijkstra("G2", storeNodes.nodes, storeEdge.edges));
+    const DG1 = dijkstra("G1", storeNodes.nodes, storeEdge.edges);
+    const PG1 = setPath(storeNodes.nodes, storeEdge.edges, DG1.distances, DG1.paths);
+    // const DG2 = dijkstra("G2", storeNodes.nodes, storeEdge.edges);
+    // const PG2 = setPath(storeNodes.nodes, storeEdge.edges, DG2.distances, DG2.paths);
 
+    // console.log(DG1);
+    // console.log(PG1);
+    // console.log(DG2);
+    // console.log(PG2);
+
+    storePaths.setPath(PG1);
+
+    // viewMessages.value = [{ message: "Paths calculated successfully", type: "warning" }]; // Sending message to the wrong component
     console.log("Finish");
 };
 </script>

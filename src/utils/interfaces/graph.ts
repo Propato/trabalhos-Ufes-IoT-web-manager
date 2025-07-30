@@ -14,7 +14,8 @@ export interface IEdge {
 }
 
 export interface IPath {
-    length: number;
+    slot_length: number;
+    full_length: number;
     gate: string;
     slot: string;
     entrance: string;

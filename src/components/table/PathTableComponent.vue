@@ -14,25 +14,26 @@
 </template>
 
 <script setup lang="ts">
-import type { IAlertMessage, IPath } from "@/utils/interfaces";
+import type { IAlertMessage } from "@/utils/interfaces";
 import { MessageComponent } from "@/components/functional";
 import { usePathStore } from "@/stores";
 import { AgGridVue } from "ag-grid-vue3";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const store = usePathStore();
 const viewMessages = ref<IAlertMessage[]>([]);
 
-const localData = ref<IPath[]>([{} as IPath, ...store.paths]);
+const localData = computed(() =>
+    store.paths.filter(
+        (p) =>
+            p.slot_length &&
+            p.slot_length !== Infinity &&
+            p.full_length &&
+            p.full_length !== Infinity,
+    ),
+);
 
 const colDefs = [
-    {
-        field: "length",
-        headerName: "Length",
-        sortable: true,
-        filter: true,
-        flex: 2,
-    },
     {
         field: "gate",
         headerName: "Gate",
@@ -54,12 +55,29 @@ const colDefs = [
         filter: true,
         flex: 2,
     },
-    // {
-    //     field: "path",
-    //     headerName: "Path",
-    //     sortable: true,
-    //     filter: true,
-    //     flex: 2,
-    // },
+    {
+        field: "slot_length",
+        headerName: "Length to Slot",
+        sortable: true,
+        filter: true,
+        flex: 2,
+    },
+    {
+        field: "full_length",
+        headerName: "Full Length",
+        sortable: true,
+        filter: true,
+        flex: 2,
+    },
+    {
+        field: "path",
+        headerName: "Path",
+        sortable: true,
+        filter: true,
+        flex: 2,
+        valueFormatter: (params: { value: string[] }) => {
+            return Array.isArray(params.value) ? params.value.join(" → ") : "No Path";
+        },
+    },
 ];
 </script>

@@ -33,7 +33,7 @@ export const useNodeStore = defineStore("nodes", {
             localStorage.setItem("nodes", JSON.stringify(this.nodes));
         },
 
-        resetNode(nodes: INode[]) {
+        setNode(nodes: INode[]) {
             this.nodes = nodes;
             this.persistNodes();
         },

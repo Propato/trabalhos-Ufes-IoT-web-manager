@@ -13,13 +13,13 @@
     },
     {
         "id": 3,
-        "label": "E4",
+        "label": "E1",
         "type": "entrance",
         "active": true
     },
     {
         "id": 4,
-        "label": "E4",
+        "label": "E2",
         "type": "entrance",
         "active": true
     },

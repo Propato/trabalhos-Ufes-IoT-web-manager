@@ -38,6 +38,12 @@ export function dijkstra(gateLabel: string, nodes: INode[], edges: IEdge[]) {
             paths[node.label] = null;
         }
     });
+
+    if (filteredNodes[gateLabel] === undefined) {
+        console.error(new Error(`Gate with label ${gateLabel} not found in the graph.`));
+        return { distances: distances, paths: paths };
+    }
+
     distances[gateLabel] = 0; // The distance from the start node to itself is 0
 
     // Loop until all nodes are visited
