@@ -1,5 +1,5 @@
 <template>
-    <div v-if="loading" class="d-flex justify-content-center align-items-center m-3">
+    <div v-if="loading" class="d-flex justify-content-center align-items-center">
         <font-awesome-icon
             :icon="['fas', 'spinner']"
             spin
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed } from "vue";
 
 const { size, color, loading } = defineProps({
     size: {
@@ -19,7 +19,7 @@ const { size, color, loading } = defineProps({
         default: "lg",
         // required: false,
         validator(value: string) {
-            return ["sm", "md", "lg", "xl"].includes(value)
+            return ["sm", "md", "lg", "xl"].includes(value);
         },
     },
     color: {
@@ -36,28 +36,28 @@ const { size, color, loading } = defineProps({
                 "info",
                 "light",
                 "dark",
-            ].includes(value)
+            ].includes(value);
         },
     },
     loading: Boolean,
-})
+});
 
 const sizeClass = computed(() => {
     switch (size) {
         case "sm":
-            return "fa-xs"
+            return "fa-xs";
         case "md":
-            return "fa-lg"
+            return "fa-lg";
         case "lg":
-            return "fa-2x"
+            return "fa-2x";
         case "xl":
-            return "fa-3x"
+            return "fa-3x";
         default:
-            return "fa-lg"
+            return "fa-lg";
     }
-})
+});
 
 const colorClass = computed(() => {
-    return color ? `text-${color}` : "text-primary"
-})
+    return color ? `text-${color}` : "text-primary";
+});
 </script>

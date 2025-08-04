@@ -32,35 +32,48 @@ export const formatPath = (
 
     const fullPaths = setAncestor(paths);
     const entranceNodes: string[] = [];
-    const entranceEdges: TAllDistance = {};
+    const edgesToEntrance: { [key: string]: { entrance: string; length: number } } = {};
 
-    nodes.forEach((entranceNode) => {
-        if (entranceNode.active && entranceNode.type === "entrance") {
-            entranceNodes.push(entranceNode.label);
-            entranceEdges[entranceNode.label] = {};
+    nodes.forEach((node) => {
+        if (node.active && node.type === "entrance") {
+            entranceNodes.push(node.label);
+        }
+        edgesToEntrance[node.label] = { entrance: "", length: Infinity };
+    });
+
+    edges.forEach((edge) => {
+        if (edge.active && entranceNodes.includes(edge.target)) {
+            if (edge.length < edgesToEntrance[edge.source].length) {
+                edgesToEntrance[edge.source] = { entrance: edge.target, length: edge.length };
+            }
         }
     });
 
-    edges.forEach((edgeToEntrance) => {
-        if (edgeToEntrance.active && entranceNodes.includes(edgeToEntrance.target)) {
-            entranceEdges[edgeToEntrance.target][edgeToEntrance.source] = edgeToEntrance.length;
-        }
-    });
+    console.log("Distances:", distances);
+    console.log("Paths:", paths);
+    console.log("Full Paths:", fullPaths);
+    console.log("Entrance Nodes:", entranceNodes);
+    console.log("Edges to entrance:", edgesToEntrance);
 
     for (const gate in distances) {
         for (const node in distances[gate]) {
-            for (const entrance in entranceEdges) {
-                if (!!entranceEdges[entrance][node]) {
-                    pathTable.push({
-                        slot_length: distances[gate][node],
-                        full_length:
-                            distances[gate][node] + (entranceEdges[entrance][node] || Infinity),
-                        gate: gate || "",
-                        slot: fullPaths[gate][node][fullPaths[gate][node].length - 1] || "",
-                        entrance: entrance,
-                        path: [...fullPaths[gate][node], entrance],
-                    });
-                }
+            if (edgesToEntrance[node].entrance !== "") {
+                console.log({
+                    slot_length: distances[gate][node],
+                    full_length: distances[gate][node] + edgesToEntrance[node].length,
+                    gate: gate,
+                    slot: node,
+                    entrance: edgesToEntrance[node].entrance,
+                    path: [...fullPaths[gate][node], edgesToEntrance[node].entrance],
+                });
+                pathTable.push({
+                    slot_length: distances[gate][node],
+                    full_length: distances[gate][node] + edgesToEntrance[node].length,
+                    gate: gate,
+                    slot: node,
+                    entrance: edgesToEntrance[node].entrance,
+                    path: [...fullPaths[gate][node], edgesToEntrance[node].entrance],
+                });
             }
         }
     }

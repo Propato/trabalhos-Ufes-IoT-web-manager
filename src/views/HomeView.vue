@@ -3,11 +3,17 @@
 
     <p>Welcome to the home page.</p>
 
-    <MessageComponent :messages="viewGraphMessages" />
-
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="h4">Register your graphs</h3>
-        <button class="btn btn-warning mt-2" @click="resetGraph">Reset to Default</button>
+        <button class="btn btn-warning mt-2" @click="resetGraph">
+            <LoadingSpinnerComponent
+                :loading="loading"
+                :size="'md'"
+                :color="'dark'"
+                class="mx-5 my-1"
+            />
+            <template v-if="!loading"> Reset to Default </template>
+        </button>
     </div>
 
     <!-- Nav Tabs -->
@@ -45,6 +51,7 @@
 
         <!-- Tab Content -->
         <div class="tab-content" id="graphTabsContent">
+            <MessageComponent :messages="viewGraphMessages" />
             <div
                 class="tab-pane fade show active"
                 id="nodes"
@@ -58,13 +65,17 @@
             </div>
         </div>
 
-        <MessageComponent :messages="viewPathsMessages" />
-
         <div>
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="h4">Graph Report</h3>
                 <button class="btn btn-warning mt-3" @click="calculatePaths">
-                    Calculate Paths
+                    <LoadingSpinnerComponent
+                        :loading="loading"
+                        :size="'md'"
+                        :color="'dark'"
+                        class="mx-5 my-1"
+                    />
+                    <template v-if="!loading"> Calculate Paths </template>
                 </button>
             </div>
 
@@ -87,6 +98,7 @@
                 </ul>
 
                 <div class="tab-content" id="graphTabsContent">
+                    <MessageComponent :messages="viewPathsMessages" />
                     <div
                         class="tab-pane fade show active"
                         id="nodes"
@@ -105,6 +117,7 @@
 import { EdgeTableComponent, NodeTableComponent, PathTableComponent } from "@/components/table";
 import type { IAlertMessage, IEdge, INode } from "@/utils/interfaces";
 import { useEdgeStore, useNodeStore, usePathStore } from "@/stores";
+import { LoadingSpinnerComponent } from "@/components/functional";
 import { dijkstra, jsonFileToObject } from "@/utils/functions";
 import { MessageComponent } from "@/components/functional";
 import { formatPath } from "@/utils/functions/path";
@@ -116,8 +129,12 @@ const storePaths = usePathStore();
 
 const viewGraphMessages = ref<IAlertMessage[]>([]);
 const viewPathsMessages = ref<IAlertMessage[]>([]);
+const loading = ref<boolean>(false);
 
 const resetGraph = async () => {
+    loading.value = true;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     viewGraphMessages.value = [];
     let { content, errors } = await jsonFileToObject("db/nodes.json");
     if (errors.length) {
@@ -138,21 +155,19 @@ const resetGraph = async () => {
 
     viewGraphMessages.value = [{ message: "Graph reset successfully", type: "warning" }];
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    window.location.reload();
+    loading.value = false;
 };
 
-const calculatePaths = () => {
+const calculatePaths = async () => {
+    loading.value = true;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     const { distances, paths } = dijkstra(storeNodes.nodes, storeEdge.edges);
     const fullPaths = formatPath(storeNodes.nodes, storeEdge.edges, distances, paths);
-
-    console.log(distances);
-    console.log(paths);
-    console.log(fullPaths);
-
     storePaths.setPath(fullPaths);
 
-    viewPathsMessages.value = [{ message: "Paths calculated successfully", type: "warning" }]; // Sending message to the wrong component
+    viewPathsMessages.value = [{ message: "Paths calculated successfully", type: "warning" }];
+    loading.value = false;
 };
 </script>
 
