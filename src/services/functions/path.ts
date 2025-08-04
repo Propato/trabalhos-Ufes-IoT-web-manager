@@ -49,23 +49,9 @@ export const formatPath = (
         }
     });
 
-    console.log("Distances:", distances);
-    console.log("Paths:", paths);
-    console.log("Full Paths:", fullPaths);
-    console.log("Entrance Nodes:", entranceNodes);
-    console.log("Edges to entrance:", edgesToEntrance);
-
     for (const gate in distances) {
         for (const node in distances[gate]) {
             if (edgesToEntrance[node].entrance !== "") {
-                console.log({
-                    slot_length: distances[gate][node],
-                    full_length: distances[gate][node] + edgesToEntrance[node].length,
-                    gate: gate,
-                    slot: node,
-                    entrance: edgesToEntrance[node].entrance,
-                    path: [...fullPaths[gate][node], edgesToEntrance[node].entrance],
-                });
                 pathTable.push({
                     slot_length: distances[gate][node],
                     full_length: distances[gate][node] + edgesToEntrance[node].length,
