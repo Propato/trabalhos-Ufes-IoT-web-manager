@@ -1,5 +1,5 @@
 // src/stores/useGridStore.ts
-import type { INode } from "@/utils/interfaces";
+import type { INode } from "@/services/interfaces";
 import { defineStore } from "pinia";
 
 export const useNodeStore = defineStore("nodes", {

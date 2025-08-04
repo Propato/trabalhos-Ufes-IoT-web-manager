@@ -1,5 +1,5 @@
 // src/stores/useGridStore.ts
-import type { IEdge } from "@/utils/interfaces";
+import type { IEdge } from "@/services/interfaces";
 import { defineStore } from "pinia";
 
 export const useEdgeStore = defineStore("edges", {

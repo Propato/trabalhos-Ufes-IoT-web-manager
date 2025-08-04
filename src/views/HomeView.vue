@@ -115,12 +115,12 @@
 
 <script setup lang="ts">
 import { EdgeTableComponent, NodeTableComponent, PathTableComponent } from "@/components/table";
-import type { IAlertMessage, IEdge, INode } from "@/utils/interfaces";
+import type { IAlertMessage, IEdge, INode } from "@/services/interfaces";
 import { useEdgeStore, useNodeStore, usePathStore } from "@/stores";
 import { LoadingSpinnerComponent } from "@/components/functional";
-import { dijkstra, jsonFileToObject } from "@/utils/functions";
+import { dijkstra, jsonFileToObject } from "@/services/functions";
 import { MessageComponent } from "@/components/functional";
-import { formatPath } from "@/utils/functions/path";
+import { formatPath } from "@/services/functions/path";
 import { ref } from "vue";
 
 const storeEdge = useEdgeStore();

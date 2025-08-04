@@ -1,4 +1,4 @@
-import type { IAlertMessage } from "@/utils/interfaces";
+import type { IAlertMessage } from "@/services/interfaces";
 
 export const jsonFileToObject = async (
     file: string,

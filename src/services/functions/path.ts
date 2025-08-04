@@ -1,4 +1,4 @@
-import type { IEdge, INode, IPath } from "@/utils/interfaces";
+import type { IEdge, INode, IPath } from "@/services/interfaces";
 import type { TAllDistance, TAllPath, TFullPath } from "../types";
 
 const setAncestor = (paths: TAllPath): TFullPath => {

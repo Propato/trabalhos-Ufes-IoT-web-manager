@@ -1,5 +1,5 @@
 // src/stores/useGridStore.ts
-import type { IPath } from "@/utils/interfaces";
+import type { IPath } from "@/services/interfaces";
 import { defineStore } from "pinia";
 
 export const usePathStore = defineStore("paths", {

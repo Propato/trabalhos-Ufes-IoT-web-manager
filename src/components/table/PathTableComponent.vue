@@ -19,7 +19,7 @@ import { ref, computed } from "vue";
 import type { GridReadyEvent } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
 import { usePathStore } from "@/stores";
-import type { IAlertMessage } from "@/utils/interfaces";
+import type { IAlertMessage } from "@/services/interfaces";
 import { MessageComponent } from "@/components/functional";
 
 const store = usePathStore();

@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { CustomActionRenderer } from "@/components/table/actions";
-import type { IAlertMessage, INode } from "@/utils/interfaces";
+import type { IAlertMessage, INode } from "@/services/interfaces";
 import { MessageComponent } from "@/components/functional";
 import { useNodeStore } from "@/stores/nodes";
 import { AgGridVue } from "ag-grid-vue3";

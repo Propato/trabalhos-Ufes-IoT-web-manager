@@ -1,5 +1,5 @@
-import type { IEdge, INode } from "@/utils//interfaces";
-import type { TAllDistance, TAllPath, TDistance, TPath } from "@/utils/types/dijkstra";
+import type { IEdge, INode } from "@/services/interfaces";
+import type { TAllDistance, TAllPath, TDistance, TPath } from "@/services/types/dijkstra";
 
 function getClosestNode(distances: TDistance, visited: Set<string>): string | null {
     let minKey: string | null = null;

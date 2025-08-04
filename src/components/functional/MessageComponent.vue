@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IAlertMessage } from "@/utils/interfaces";
+import type { IAlertMessage } from "@/services/interfaces";
 import { ref, watch } from "vue";
 
 const { messages } = defineProps<{
