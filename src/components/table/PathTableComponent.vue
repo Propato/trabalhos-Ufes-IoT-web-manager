@@ -2,23 +2,25 @@
     <div class="m-4">
         <MessageComponent :messages="viewMessages" />
         <ag-grid-vue
+            class="ag-theme-alpine"
             :rowData="localData"
             :columnDefs="colDefs"
             :pagination="true"
             :paginationPageSize="5"
             :paginationPageSizeSelector="[5, 10, 20]"
-            style="height: 400px"
-        >
-        </ag-grid-vue>
+            domLayout="autoHeight"
+            @grid-ready="onGridReady"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from "vue";
+import type { GridReadyEvent } from "ag-grid-community";
+import { AgGridVue } from "ag-grid-vue3";
+import { usePathStore } from "@/stores";
 import type { IAlertMessage } from "@/utils/interfaces";
 import { MessageComponent } from "@/components/functional";
-import { usePathStore } from "@/stores";
-import { AgGridVue } from "ag-grid-vue3";
-import { ref, computed } from "vue";
 
 const store = usePathStore();
 const viewMessages = ref<IAlertMessage[]>([]);
@@ -39,45 +41,47 @@ const colDefs = [
         headerName: "Gate",
         sortable: true,
         filter: true,
-        flex: 2,
+        flex: 1,
     },
     {
         field: "slot",
         headerName: "Slot",
         sortable: true,
         filter: true,
-        flex: 2,
+        flex: 1,
     },
     {
         field: "entrance",
         headerName: "Entrance",
         sortable: true,
         filter: true,
-        flex: 2,
+        flex: 1,
     },
     {
         field: "slot_length",
         headerName: "Length to Slot",
         sortable: true,
         filter: true,
-        flex: 2,
+        flex: 1,
     },
     {
         field: "full_length",
         headerName: "Full Length",
         sortable: true,
         filter: true,
-        flex: 2,
+        flex: 1,
     },
     {
         field: "path",
         headerName: "Path",
         sortable: true,
         filter: true,
-        flex: 2,
-        valueFormatter: (params: { value: string[] }) => {
-            return Array.isArray(params.value) ? params.value.join(" → ") : "No Path";
-        },
+        valueFormatter: (params: { value: string[] }) =>
+            Array.isArray(params.value) ? params.value.join(" → ") : "No Path",
     },
 ];
+
+function onGridReady(params: GridReadyEvent) {
+    params.api.autoSizeColumns(["path"]);
+}
 </script>

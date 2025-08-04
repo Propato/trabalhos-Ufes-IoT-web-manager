@@ -9,7 +9,7 @@
             :paginationPageSizeSelector="[5, 10, 20]"
             :components="{ CustomActionRenderer }"
             @cellValueChanged="onCellValueChanged"
-            style="height: 400px"
+            domLayout="autoHeight"
         >
         </ag-grid-vue>
     </div>
