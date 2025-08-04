@@ -3,7 +3,7 @@
 
     <p>Welcome to the home page.</p>
 
-    <MessageComponent :messages="viewMessages" />
+    <MessageComponent :messages="viewGraphMessages" />
 
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="h4">Register your graphs</h3>
@@ -58,6 +58,8 @@
             </div>
         </div>
 
+        <MessageComponent :messages="viewPathsMessages" />
+
         <div>
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="h4">Graph Report</h3>
@@ -102,30 +104,31 @@
 <script setup lang="ts">
 import { EdgeTableComponent, NodeTableComponent, PathTableComponent } from "@/components/table";
 import type { IAlertMessage, IEdge, INode } from "@/utils/interfaces";
-import { MessageComponent } from "@/components/functional";
 import { useEdgeStore, useNodeStore, usePathStore } from "@/stores";
 import { dijkstra, jsonFileToObject } from "@/utils/functions";
+import { MessageComponent } from "@/components/functional";
+import { formatPath } from "@/utils/functions/path";
 import { ref } from "vue";
-import { setPath } from "@/utils/functions/path";
 
 const storeEdge = useEdgeStore();
 const storeNodes = useNodeStore();
 const storePaths = usePathStore();
 
-const viewMessages = ref<IAlertMessage[]>([]);
+const viewGraphMessages = ref<IAlertMessage[]>([]);
+const viewPathsMessages = ref<IAlertMessage[]>([]);
 
 const resetGraph = async () => {
-    viewMessages.value = [];
+    viewGraphMessages.value = [];
     let { content, errors } = await jsonFileToObject("db/nodes.json");
     if (errors.length) {
-        viewMessages.value.push(...errors);
+        viewGraphMessages.value.push(...errors);
         return;
     }
     const contentNode = content as INode[];
 
     ({ content, errors } = await jsonFileToObject("db/edges.json"));
     if (errors.length) {
-        viewMessages.value.push(...errors);
+        viewGraphMessages.value.push(...errors);
         return;
     }
     const contentEdge = content as IEdge[];
@@ -133,29 +136,23 @@ const resetGraph = async () => {
     storeNodes.setNode(contentNode);
     storeEdge.setEdge(contentEdge);
 
-    viewMessages.value = [{ message: "Graph reset successfully", type: "warning" }];
+    viewGraphMessages.value = [{ message: "Graph reset successfully", type: "warning" }];
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     window.location.reload();
 };
 
 const calculatePaths = () => {
-    console.log("Click");
+    const { distances, paths } = dijkstra(storeNodes.nodes, storeEdge.edges);
+    const fullPaths = formatPath(storeNodes.nodes, storeEdge.edges, distances, paths);
 
-    const DG1 = dijkstra("G1", storeNodes.nodes, storeEdge.edges);
-    const PG1 = setPath(storeNodes.nodes, storeEdge.edges, DG1.distances, DG1.paths);
-    // const DG2 = dijkstra("G2", storeNodes.nodes, storeEdge.edges);
-    // const PG2 = setPath(storeNodes.nodes, storeEdge.edges, DG2.distances, DG2.paths);
+    console.log(distances);
+    console.log(paths);
+    console.log(fullPaths);
 
-    // console.log(DG1);
-    // console.log(PG1);
-    // console.log(DG2);
-    // console.log(PG2);
+    storePaths.setPath(fullPaths);
 
-    storePaths.setPath(PG1);
-
-    // viewMessages.value = [{ message: "Paths calculated successfully", type: "warning" }]; // Sending message to the wrong component
-    console.log("Finish");
+    viewPathsMessages.value = [{ message: "Paths calculated successfully", type: "warning" }]; // Sending message to the wrong component
 };
 </script>
 

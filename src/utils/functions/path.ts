@@ -1,71 +1,69 @@
-import type { IEdge, INode } from "@/utils/interfaces";
+import type { IEdge, INode, IPath } from "@/utils/interfaces";
+import type { TAllDistance, TAllPath, TFullPath } from "../types";
 
-interface IPath {
-    slot_length: number;
-    full_length: number;
-    gate: string;
-    slot: string;
-    entrance: string;
-    path: string[];
-}
+const setAncestor = (paths: TAllPath): TFullPath => {
+    const fullPaths: TFullPath = {};
 
-const setAncestor = (paths: { [key: string]: string | null }): { [key: string]: string[] } => {
-    const completePaths: { [key: string]: string[] } = {};
+    for (const gate in paths) {
+        fullPaths[gate] = {};
+        for (const initialNode in paths[gate]) {
+            const fullPathToNode: string[] = [];
+            let currentNode: string | null = initialNode; // Começa pelo elemento atual
 
-    for (const p in paths) {
-        const caminho: string[] = [];
-        let atual: string | null = p; // Começa pelo elemento atual
+            while (currentNode !== null) {
+                fullPathToNode.unshift(currentNode); // Adiciona no início do caminho
+                currentNode = paths[gate][currentNode]; // Vai para o pai do atual
+            }
 
-        while (atual !== null && atual in paths) {
-            caminho.unshift(atual); // Adiciona no início do caminho
-            atual = paths[atual]; // Vai para o pai do atual
+            fullPaths[gate][initialNode] = fullPathToNode;
         }
-
-        completePaths[p] = caminho;
     }
 
-    return completePaths;
+    return fullPaths;
 };
 
-export const setPath = (
+export const formatPath = (
     nodes: INode[],
     edges: IEdge[],
-    distances: { [key: string]: number },
-    paths: { [key: string]: string | null },
+    distances: TAllDistance,
+    paths: TAllPath,
 ) => {
-    const completePaths: IPath[] = [];
+    const pathTable: IPath[] = [];
 
     const fullPaths = setAncestor(paths);
     const entranceNodes: string[] = [];
-    const entranceEdges: { [key: string]: { [key: string]: number } } = {};
+    const entranceEdges: TAllDistance = {};
 
-    nodes.forEach((element) => {
-        if (element.active && element.type === "entrance") {
-            entranceNodes.push(element.label);
+    nodes.forEach((entranceNode) => {
+        if (entranceNode.active && entranceNode.type === "entrance") {
+            entranceNodes.push(entranceNode.label);
+            entranceEdges[entranceNode.label] = {};
         }
     });
 
-    edges.forEach((element) => {
-        if (element.active && entranceNodes.includes(element.target)) {
-            entranceEdges[element.target] = entranceEdges[element.target] || {};
-            entranceEdges[element.target][element.source] = element.length;
+    edges.forEach((edgeToEntrance) => {
+        if (edgeToEntrance.active && entranceNodes.includes(edgeToEntrance.target)) {
+            entranceEdges[edgeToEntrance.target][edgeToEntrance.source] = edgeToEntrance.length;
         }
     });
 
-    Object.keys(distances).forEach((d) => {
-        Object.keys(entranceEdges).forEach((e) => {
-            if (!!entranceEdges[e][d]) {
-                completePaths.push({
-                    slot_length: distances[d],
-                    full_length: distances[d] + (entranceEdges[e][d] || 0),
-                    gate: fullPaths[d][0] || "",
-                    slot: fullPaths[d][fullPaths[d].length - 1] || "",
-                    entrance: e,
-                    path: [...fullPaths[d], e],
-                });
+    for (const gate in distances) {
+        for (const node in distances[gate]) {
+            for (const entrance in entranceEdges) {
+                if (!!entranceEdges[entrance][node]) {
+                    pathTable.push({
+                        slot_length: distances[gate][node],
+                        full_length:
+                            distances[gate][node] + (entranceEdges[entrance][node] || Infinity),
+                        gate: gate || "",
+                        slot: fullPaths[gate][node][fullPaths[gate][node].length - 1] || "",
+                        entrance: entrance,
+                        path: [...fullPaths[gate][node], entrance],
+                    });
+                }
             }
-        });
-    });
+        }
+    }
 
-    return completePaths;
+    return pathTable;
 };
