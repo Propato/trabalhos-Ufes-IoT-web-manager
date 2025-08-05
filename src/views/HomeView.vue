@@ -5,6 +5,7 @@
 
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="h4">Register your graphs</h3>
+        <button class="btn btn-warning mt-2" @click="sendMQTT">Send MQTT</button>
         <button class="btn btn-warning mt-2" @click="resetGraph">
             <LoadingSpinnerComponent
                 :loading="loading"
@@ -119,8 +120,10 @@ import type { IAlertMessage, IEdge, INode } from "@/services/interfaces";
 import { useEdgeStore, useNodeStore, usePathStore } from "@/stores";
 import { LoadingSpinnerComponent } from "@/components/functional";
 import { dijkstra, jsonFileToObject } from "@/services/functions";
+import MqttService from "@/services/comunication/MqttService";
 import { MessageComponent } from "@/components/functional";
 import { formatPath } from "@/services/functions/path";
+import { onMounted, onBeforeUnmount } from "vue";
 import { ref } from "vue";
 
 const storeEdge = useEdgeStore();
@@ -130,6 +133,11 @@ const storePaths = usePathStore();
 const viewGraphMessages = ref<IAlertMessage[]>([]);
 const viewPathsMessages = ref<IAlertMessage[]>([]);
 const loading = ref<boolean>(false);
+
+const mqtt = new MqttService(
+    "wss://broker.hivemq.com:8884/mqtt",
+    "vue-client-" + Math.random().toString(16).substr(2, 8),
+);
 
 const resetGraph = async () => {
     loading.value = true;
@@ -169,6 +177,32 @@ const calculatePaths = async () => {
     viewPathsMessages.value = [{ message: "Paths calculated successfully", type: "warning" }];
     loading.value = false;
 };
+
+const sendMQTT = () => {
+    // Função exemplo
+    mqtt.publish("propato/topico/teste", "Hello from Vue!");
+    viewGraphMessages.value.push({ message: "MQTT message sent", type: "info" });
+};
+
+onMounted(async () => {
+    await mqtt.connect(10000);
+
+    mqtt.subscribe("propato/topico/teste", (topic, message) => {
+        // Função exemplo
+        console.log(`[MQTT] Mensagem recebida em ${topic}:`, message);
+    });
+
+    mqtt.subscribe("propato/G1/request", (topic, message) => {
+        // Função exemplo
+        console.log(`[MQTT] Mensagem recebida em ${topic}:`, message);
+
+        mqtt.publish("propato/G1/response", "vaga livre XX");
+    });
+});
+
+onBeforeUnmount(() => {
+    mqtt.disconnect();
+});
 </script>
 
 <style scoped>

@@ -55,6 +55,7 @@ export const formatPath = (
                 pathTable.push({
                     slot_length: distances[gate][node],
                     full_length: distances[gate][node] + edgesToEntrance[node].length,
+                    weighted_length: distances[gate][node] + 2 * edgesToEntrance[node].length,
                     gate: gate,
                     slot: node,
                     entrance: edgesToEntrance[node].entrance,
