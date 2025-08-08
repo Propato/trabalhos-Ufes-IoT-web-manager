@@ -21,13 +21,21 @@ import type { IAlertMessage, IEdge } from "@/services/interfaces";
 import { MessageComponent } from "@/components/functional";
 import { useEdgeStore, useNodeStore } from "@/stores";
 import { AgGridVue } from "ag-grid-vue3";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const store = useEdgeStore();
 const storeNodes = useNodeStore();
 const viewMessages = ref<IAlertMessage[]>([]);
 
 const localData = ref<IEdge[]>([{} as IEdge, ...store.edges]);
+
+watch(
+    () => store.edges,
+    (edges) => {
+        localData.value = [{} as IEdge, ...edges];
+    },
+    { immediate: true, deep: true },
+);
 
 const deleteRow = (data: IEdge) => {
     if (!data.id) return;

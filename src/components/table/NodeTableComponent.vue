@@ -21,12 +21,20 @@ import type { IAlertMessage, INode } from "@/services/interfaces";
 import { MessageComponent } from "@/components/functional";
 import { useNodeStore } from "@/stores/nodes";
 import { AgGridVue } from "ag-grid-vue3";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const store = useNodeStore();
 const viewMessages = ref<IAlertMessage[]>([]);
 
 const localData = ref<INode[]>([{} as INode, ...store.nodes]);
+
+watch(
+    () => store.nodes,
+    (nodes) => {
+        localData.value = [{} as INode, ...nodes];
+    },
+    { immediate: true, deep: true },
+);
 
 const deleteRow = (data: INode) => {
     if (!data.id) return;

@@ -1,4 +1,3 @@
-// src/stores/useGridStore.ts
 import type { IPath } from "@/services/interfaces";
 import { defineStore } from "pinia";
 
@@ -14,7 +13,6 @@ export const usePathStore = defineStore("paths", {
 
         setPath(paths: IPath[]) {
             this.paths = paths;
-            this.persistPaths();
         },
     },
     persist: true,

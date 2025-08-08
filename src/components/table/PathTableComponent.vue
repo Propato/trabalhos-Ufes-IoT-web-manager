@@ -15,24 +15,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, watch } from "vue";
 import type { GridReadyEvent } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
-import { usePathStore } from "@/stores";
+import { useOccupationStore, usePathStore } from "@/stores";
 import type { IAlertMessage } from "@/services/interfaces";
 import { MessageComponent } from "@/components/functional";
 
-const store = usePathStore();
+const storePaths = usePathStore();
 const viewMessages = ref<IAlertMessage[]>([]);
+const storeOccupation = useOccupationStore();
 
-const localData = computed(() =>
-    store.paths.filter(
-        (p) =>
-            p.slot_length &&
-            p.slot_length !== Infinity &&
-            p.full_length &&
-            p.full_length !== Infinity,
-    ),
+let localData = storePaths.paths.filter(
+    (p) =>
+        p.slot_length && p.slot_length !== Infinity && p.full_length && p.full_length !== Infinity,
 );
 
 const colDefs = [
@@ -72,6 +68,22 @@ const colDefs = [
         flex: 1,
     },
     {
+        field: "weighted_length",
+        headerName: "Weighted Length",
+        sortable: true,
+        filter: true,
+        flex: 1,
+    },
+    {
+        field: "occupied",
+        headerName: "Occupied",
+        sortable: true,
+        filter: true,
+        flex: 1,
+        cellRenderer: "agCheckboxCellRenderer",
+        cellEditor: "agCheckboxCellEditor",
+    },
+    {
         field: "path",
         headerName: "Path",
         sortable: true,
@@ -84,4 +96,27 @@ const colDefs = [
 function onGridReady(params: GridReadyEvent) {
     params.api.autoSizeColumns(["path"]);
 }
+
+watch(
+    () => storeOccupation.occupation,
+    (newOccupation) => {
+        storePaths.paths.forEach((path) => {
+            path.occupied = newOccupation[path.slot] || false;
+        });
+    },
+    { immediate: true, deep: true },
+);
+watch(
+    () => storePaths.paths,
+    (newPaths) => {
+        localData = newPaths.filter(
+            (p) =>
+                p.slot_length &&
+                p.slot_length !== Infinity &&
+                p.full_length &&
+                p.full_length !== Infinity,
+        );
+    },
+    { immediate: true, deep: true },
+);
 </script>

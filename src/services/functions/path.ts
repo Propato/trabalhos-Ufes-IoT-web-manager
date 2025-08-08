@@ -1,5 +1,6 @@
 import type { IEdge, INode, IPath } from "@/services/interfaces";
 import type { TAllDistance, TAllPath, TFullPath } from "../types";
+import { useOccupationStore } from "@/stores";
 
 const setAncestor = (paths: TAllPath): TFullPath => {
     const fullPaths: TFullPath = {};
@@ -49,6 +50,8 @@ export const formatPath = (
         }
     });
 
+    const { hasOccupation } = useOccupationStore();
+
     for (const gate in distances) {
         for (const node in distances[gate]) {
             if (edgesToEntrance[node].entrance !== "") {
@@ -60,6 +63,7 @@ export const formatPath = (
                     slot: node,
                     entrance: edgesToEntrance[node].entrance,
                     path: [...fullPaths[gate][node], edgesToEntrance[node].entrance],
+                    occupied: hasOccupation(node),
                 });
             }
         }

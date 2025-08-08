@@ -1,4 +1,3 @@
-// src/stores/useGridStore.ts
 import type { INode } from "@/services/interfaces";
 import { defineStore } from "pinia";
 
@@ -35,7 +34,6 @@ export const useNodeStore = defineStore("nodes", {
 
         setNode(nodes: INode[]) {
             this.nodes = nodes;
-            this.persistNodes();
         },
     },
     persist: true,

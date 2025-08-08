@@ -21,4 +21,9 @@ export interface IPath {
     slot: string;
     entrance: string;
     path: string[];
+    occupied: boolean;
+}
+
+export interface IOccupation {
+    [slot: string]: boolean;
 }
