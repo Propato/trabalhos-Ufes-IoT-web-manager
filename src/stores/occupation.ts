@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 export const useOccupationStore = defineStore("occupation", {
     state: () => ({
         occupation: JSON.parse(localStorage.getItem("occupation") || "{}") as IOccupation,
+        occupiedSlots: Number(localStorage.getItem("occupiedSlots") || "0"),
     }),
 
     actions: {
@@ -12,12 +13,18 @@ export const useOccupationStore = defineStore("occupation", {
             localStorage.setItem("occupation", JSON.stringify(this.occupation));
         },
 
+        persistOccupiedSlots() {
+            localStorage.setItem("occupiedSlots", JSON.stringify(this.occupiedSlots));
+        },
+
         addOccupation(slot: string) {
             this.occupation[slot] = true;
+            this.occupiedSlots++;
         },
 
         deleteOccupation(slot: string) {
             delete this.occupation[slot];
+            this.occupiedSlots--;
         },
 
         hasOccupation(slot: string): boolean {
